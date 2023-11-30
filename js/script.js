@@ -29,14 +29,26 @@ function generateBombList(num_of_bombs, total_cells) {
 }
 
 // FUNZIONE CHE GENERA LE CELL
-function createCell(cellForRow) {
+function createCell(cellForRow, i) {
     const cell = document.createElement("div");
     cell.classList.add("cell");
+    cell.id = `${i}`;
     cell.style.width = `calc(100% / ${cellForRow})`;
     cell.style.height = cell.style.width;
 
     return cell;
 }
+
+// FUNZIONE CHE MOSTRA TUTTE LE BOMBE QUANDO SI PERDE
+function redCell(bombs) {
+    for (let i = 0; i < bombs.length; i++) {
+        let redBombs = bombs[i];
+        let cell = document.getElementById(`${redBombs}`);
+        cell.classList.add("bg-danger");
+    }
+}
+
+
 
 // FUNZIONE CHE GENERA LA GRIGLIA
 function createGrid(cellNum, cellForRow) {
@@ -45,34 +57,36 @@ function createGrid(cellNum, cellForRow) {
     let points = 0;
 
     for (let i = 1; i <= cellNum; i++) {
-        let cell = createCell(cellForRow);
+        let cell = createCell(cellForRow, i);
         cell.innerText = i;
-
+        
         // VERIFICO SE IL GIOCATORE E' ANCORA IN PARTITA O HA SELEZIONATO UNA BOMBA
         cell.addEventListener("click", function () {
             if (!gameOver) {
                 if (!bombs.includes(i)) {
                     this.classList.add("bg-success");
                     points++;
-
-                    document.getElementById("points").innerText = `Il tuo punteggio è di ${points}`
-
-                    let totalPoints = 100 - bombs.length;
+                                                      
+                    document.getElementById("points").innerText = `Il tuo punteggio è di ${points}`;
+                    
+                    let totalPoints = cellNum - bombs.length; 
                     if (points == totalPoints) {
                         document.getElementById("result-text").innerText = "Hai vinto!";
+                        redCell(bombs);
                     }
                 }
-    
+                
                 else{
                     this.classList.add("bg-danger");
                     document.getElementById("result-text").innerText = "Hai perso!";
                     gameOver = true;
+                    redCell(bombs);
                 }
             }
         })
-    
+
         grid.appendChild(cell);
-    }
+    }    
 }
 
 
