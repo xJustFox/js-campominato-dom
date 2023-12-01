@@ -48,28 +48,30 @@ function redCell(bombs) {
     }
 }
 
-
-
 // FUNZIONE CHE GENERA LA GRIGLIA
 function createGrid(cellNum, cellForRow) {
-    const bombs = generateBombList(16, cellNum);
+    const bombs = generateBombList(16, cellNum);   
     let gameOver = false;
     let points = 0;
 
     for (let i = 1; i <= cellNum; i++) {
+        let checkPoints = false;
         let cell = createCell(cellForRow, i);
         cell.innerText = i;
-        
         // VERIFICO SE IL GIOCATORE E' ANCORA IN PARTITA O HA SELEZIONATO UNA BOMBA
         cell.addEventListener("click", function () {
             if (!gameOver) {
                 if (!bombs.includes(i)) {
                     this.classList.add("bg-success");
-                    points++;
-                                                      
-                    document.getElementById("points").innerText = `Il tuo punteggio è di ${points}`;
                     
-                    let totalPoints = cellNum - bombs.length; 
+                    if(!checkPoints){
+                        points++;
+                                                          
+                        document.getElementById("points").innerText = `Il tuo punteggio è di ${points}`;
+                        checkPoints = true;
+                    }
+
+                    let totalPoints = cellNum - bombs.length;
                     if (points == totalPoints) {
                         document.getElementById("result-text").innerText = "Hai vinto!";
                         redCell(bombs);
@@ -89,7 +91,7 @@ function createGrid(cellNum, cellForRow) {
     }    
 }
 
-
+// FUNZIONE CHE GESTISCE LA DIFFICOLTà DI GIOCO
 function createNewGame() {
     const grid = document.getElementById("grid");
     grid.innerHTML = "";
